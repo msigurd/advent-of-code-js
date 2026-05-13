@@ -1,0 +1,11 @@
+/* Utilities not in Oat's utilities.css */
+@layer utilities {
+  .h-100 { height: 100%; }
+
+  .my-auto { margin-top: auto; margin-bottom: auto; }
+  .mt-auto { margin-top: auto; }
+
+  .text-xs { font-size: 0.75rem; line-height: calc(1 / 0.75); }
+
+  .max-w-lg { max-width: 32rem; }
+}
