@@ -1,5 +1,6 @@
 import SOLUTION_CLASSES_MAP from './javascript/SOLUTION_CLASSES_MAP.js';
 
+const PUZZLE_INPUT_PROCESSOR = new Worker('./javascript/puzzle-input-processor.js', { type: 'module' });
 const FORM_EL = document.getElementById('form');
 const DAY_SELECT_EL = document.getElementById('day-select');
 const FILE_INPUT_EL = document.getElementById('file-input');
@@ -26,20 +27,7 @@ function process() {
   if (!selectedDay || !puzzleInput) return;
 
   addSpinner();
-
-  try {
-    const result = solutionClass(selectedDay).process(puzzleInput);
-    showResult(result);
-  } catch (error) {
-    showErrors(`${error.message}.\nOpen console for stack trace.`);
-    throw error;
-  } finally {
-    removeSpinner();
-  }
-}
-
-function solutionClass(day) {
-  return SOLUTION_CLASSES_MAP[day];
+  PUZZLE_INPUT_PROCESSOR.postMessage({ selectedDay, puzzleInput });
 }
 
 function enableAvailableOptions() {
@@ -115,6 +103,16 @@ function toggleValidationError(el, isError) {
     el.removeAttribute('aria-invalid');
   }
 }
+
+PUZZLE_INPUT_PROCESSOR.onmessage = ({ data }) => {
+  showResult(data);
+  removeSpinner();
+};
+
+PUZZLE_INPUT_PROCESSOR.onerror = (error) => {
+  showErrors(`${error.message}.\nOpen console for stack trace.`);
+  removeSpinner();
+};
 
 FILE_INPUT_EL.addEventListener('change', copyTextFromFile);
 PROCESS_BTN.addEventListener('click', process);
