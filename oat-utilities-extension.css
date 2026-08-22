@@ -2,6 +2,7 @@
 @layer utilities {
   .h-100 { height: 100%; }
 
+  .m-0 { margin: 0; }
   .my-auto { margin-top: auto; margin-bottom: auto; }
   .mt-auto { margin-top: auto; }
 
