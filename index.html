@@ -30,12 +30,9 @@
           </label>
         </label>
         <label data-field>
-          Puzzle input file (optional)<br />
-          <input type="file" id="file-input" accept="text/plain" placeholder="Pick a file..." />
-        </label>
-        <label data-field>
           Puzzle input
           <textarea id="puzzle-input" placeholder="Puzzle input..." aria-describedby="puzzle-input-error" required></textarea>
+          <input type="file" id="file-input" accept="text/plain" />
           <small id="puzzle-input-error" class="error" role="status">Puzzle input is required.</small>
         </label>
         <button type="button" id="process-btn" disabled>Process</button>
