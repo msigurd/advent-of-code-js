@@ -11,18 +11,18 @@ Solution classes can be placed in `javascript/solutions/`:
 ```
 javascript/
 ├─ solutions/
+│  ├─ day1/
+│  │  ├─ PartOne.js
 │  ├─ .gitkeep
-│  ├─ DayOne.js
-│  ├─ ...
 ```
 
 The solution class must extend from `Solution`, and implement a public `process` method:
 ```javascript
-// javascript/solutions/DayOne.js
+// javascript/solutions/day1/PartOne.js
 
-import Solution from '../Solution.js';
+import Solution from '../../Solution.js';
 
-export default class DayOne extends Solution {
+export default class PartOne extends Solution {
   process() {
     // return result of processing `this.input`
   }
@@ -30,14 +30,16 @@ export default class DayOne extends Solution {
 
 ```
 
-Lastly, it must be mapped to the correct day in `javascript/SOLUTION_CLASSES_MAP.js`:
+Lastly, it must be mapped to the correct day and part in `javascript/SOLUTION_CLASSES_MAP.js`:
 ```javascript
 // javascript/SOLUTION_CLASSES_MAP.js
 
-import DayOne from './solutions/DayOne.js';
+import DayOnePartOne from './solutions/day1/PartOne.js';
 
 export default {
-  '1': DayOne,
+  1: {
+      1: DayOnePartOne,
+  },
 }
 
 ```

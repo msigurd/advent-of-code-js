@@ -1,5 +1,7 @@
-// import DayOne from './solutions/DayOne.js';
+// import DayOnePartOne from './solutions/day1/PartOne.js';
 
 export default {
-  // '1': DayOne,
+  // 1: {
+  //   1: DayOnePartOne,
+  // },
 }

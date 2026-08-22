@@ -3,6 +3,7 @@ import SOLUTION_CLASSES_MAP from './javascript/SOLUTION_CLASSES_MAP.js';
 const PUZZLE_INPUT_PROCESSOR = new Worker('./javascript/puzzle-input-processor.js', { type: 'module' });
 const FORM_EL = document.getElementById('form');
 const DAY_SELECT_EL = document.getElementById('day-select');
+const PART_SELECT_EL = document.getElementById('part-select');
 const FILE_INPUT_EL = document.getElementById('file-input');
 const PUZZLE_INPUT_EL = document.getElementById('puzzle-input');
 const PROCESS_BTN = document.getElementById('process-btn');
@@ -12,30 +13,34 @@ const COPY_RESULT_BTN = document.getElementById('copy-result-btn');
 const ERROR_MESSAGES_EL = document.getElementById('error-messages');
 const ERROR_TEMPLATE = document.getElementById('error-template');
 
-enableAvailableOptions();
+renderDayOptions();
+renderPartOptions();
 
 function process() {
   clearErrors();
   emptyResult();
 
-  const selectedDay = DAY_SELECT_EL.value;
+  const selectedDay = Number(DAY_SELECT_EL.value);
+  const selectedPart = Number(PART_SELECT_EL.value);
   const puzzleInput = PUZZLE_INPUT_EL.value;
 
   toggleValidationError(DAY_SELECT_EL, !selectedDay);
+  toggleValidationError(PART_SELECT_EL, !selectedPart);
   toggleValidationError(PUZZLE_INPUT_EL, !puzzleInput);
 
-  if (!selectedDay || !puzzleInput) return;
+  if (!selectedDay || !selectedPart || !puzzleInput) return;
 
   addSpinner();
-  PUZZLE_INPUT_PROCESSOR.postMessage({ selectedDay, puzzleInput });
+  PUZZLE_INPUT_PROCESSOR.postMessage({ selectedDay, selectedPart, puzzleInput });
 }
 
-function enableAvailableOptions() {
-  DAY_SELECT_EL.querySelectorAll('option').forEach(optionEl => {
-    if (SOLUTION_CLASSES_MAP[optionEl.value]) {
-      optionEl.disabled = false;
-    }
-  });
+function renderDayOptions() {
+  const days = Object.keys(SOLUTION_CLASSES_MAP);
+  renderOptions('Day', DAY_SELECT_EL, days);
+}
+
+function renderPartOptions(parts = []) {
+  renderOptions('Part', PART_SELECT_EL, parts);
 }
 
 async function copyTextFromFile() {
@@ -48,8 +53,15 @@ async function copyTextFromFile() {
 }
 
 function handleFormChange() {
-  const hasAllValues = DAY_SELECT_EL.value && PUZZLE_INPUT_EL.value;
+  const hasAllValues = DAY_SELECT_EL.value && PART_SELECT_EL.value && PUZZLE_INPUT_EL.value;
   PROCESS_BTN.disabled = !hasAllValues;
+}
+
+function handleDaySelect({ target: { value } }) {
+  const dayObject = SOLUTION_CLASSES_MAP[value];
+  const parts = dayObject ? Object.keys(dayObject) : [];
+  renderPartOptions(parts);
+  PART_SELECT_EL.disabled = !value;
 }
 
 function handleManualPuzzleInput() {
@@ -110,6 +122,27 @@ function toggleValidationError(el, isError) {
   }
 }
 
+function renderOptions(name, optionEl, optionValues) {
+  const fragment = new DocumentFragment();
+
+  const placeholderOptionEl = createOptionEl('', `Select a ${name.toLowerCase()}`);
+  fragment.append(placeholderOptionEl);
+
+  for (const optionValue of optionValues) {
+    const optionEl = createOptionEl(optionValue, `${name} ${optionValue}`);
+    fragment.append(optionEl);
+  }
+
+  optionEl.replaceChildren(fragment);
+}
+
+function createOptionEl(value, text) {
+  const optionEl = document.createElement('option');
+  optionEl.value = value;
+  optionEl.textContent = text;
+  return optionEl;
+}
+
 PUZZLE_INPUT_PROCESSOR.onmessage = ({ data }) => {
   showResult(data);
   removeSpinner();
@@ -122,7 +155,9 @@ PUZZLE_INPUT_PROCESSOR.onerror = (error) => {
 
 FILE_INPUT_EL.addEventListener('change', copyTextFromFile);
 PROCESS_BTN.addEventListener('click', process);
+DAY_SELECT_EL.addEventListener('change', handleDaySelect);
 DAY_SELECT_EL.addEventListener('change', handleFormChange);
+PART_SELECT_EL.addEventListener('change', handleFormChange);
 PUZZLE_INPUT_EL.addEventListener('input', handleFormChange);
 PUZZLE_INPUT_EL.addEventListener('input', handleManualPuzzleInput);
 COPY_RESULT_BTN.addEventListener('click', copyResult);
