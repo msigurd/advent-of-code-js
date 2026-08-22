@@ -44,6 +44,12 @@ async function copyTextFromFile() {
 
   const textFromFile = await file.text();
   PUZZLE_INPUT_EL.value = textFromFile.trim();
+  PUZZLE_INPUT_EL.dispatchEvent(new Event('input')); // trigger event listeners
+}
+
+function handleFormChange() {
+  const hasAllValues = DAY_SELECT_EL.value && PUZZLE_INPUT_EL.value;
+  PROCESS_BTN.disabled = !hasAllValues;
 }
 
 function handleManualPuzzleInput() {
@@ -116,5 +122,7 @@ PUZZLE_INPUT_PROCESSOR.onerror = (error) => {
 
 FILE_INPUT_EL.addEventListener('change', copyTextFromFile);
 PROCESS_BTN.addEventListener('click', process);
+DAY_SELECT_EL.addEventListener('change', handleFormChange);
+PUZZLE_INPUT_EL.addEventListener('input', handleFormChange);
 PUZZLE_INPUT_EL.addEventListener('input', handleManualPuzzleInput);
 COPY_RESULT_BTN.addEventListener('click', copyResult);
