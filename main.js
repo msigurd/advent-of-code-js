@@ -81,7 +81,7 @@ function handleDaySelect({ target: { value } }) {
   renderPartOptions(value);
   togglePartSelect(!value);
   setUrlParam('day', value);
-  if (!value) setUrlParam('part', '');
+  setUrlParam('part', '');
 }
 
 function handlePartSelect({ target: { value } }) {
