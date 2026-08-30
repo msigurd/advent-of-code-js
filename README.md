@@ -13,6 +13,9 @@ javascript/
 ├─ solutions/
 │  ├─ day1/
 │  │  ├─ part1.js
+│  │  ├─ part2.js
+│  ├─ day2/
+│  │  ├─ part1.js
 │  ├─ .gitkeep
 ```
 
@@ -35,10 +38,16 @@ Lastly, it must be mapped to the correct day and part in `javascript/SOLUTION_CL
 // javascript/SOLUTION_CLASSES_MAP.js
 
 import day1part1 from './solutions/day1/part1.js';
+import day1part2 from './solutions/day1/part2.js';
+import day2part1 from './solutions/day2/part1.js';
 
 export default {
   1: {
     1: day1part1,
+    2: day1part2,
+  },
+  2: {
+    1: day2part1,
   },
 }
 
